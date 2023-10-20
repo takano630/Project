@@ -9,6 +9,5 @@
 
     <string name="lorem_ipsum">
         これはStrings.xmlに書いてあるよ\n
-        ほんとだよ\n
     </string>
 </resources>
