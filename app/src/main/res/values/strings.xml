@@ -8,7 +8,6 @@
     <string name="previous">Previous</string>
 
     <string name="lorem_ipsum">
-        これはStrings.xmlに書いてあるよ\n
-        ほんとだよ\n
+        これはStrings.xmlに書いてあるよ
     </string>
 </resources>
