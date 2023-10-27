@@ -4,6 +4,9 @@ import android.os.Bundle;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
+import android.app.Activity;
+import android.graphics.Color;
+import android.content.Intent;
 import androidx.core.view.WindowCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -16,11 +19,14 @@ import android.view.MenuItem;
 import java.net.*;
 import java.io.*;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.EditText;
 
 import java.io.IOException;
 import java.net.*;
@@ -29,106 +35,48 @@ import java.nio.charset.StandardCharsets;
 import java.net.*;
 import java.io.*;
 import java.util.*;
-public class MainActivity extends AppCompatActivity {
-    static Socket s;
-    static OutputStream sout;
-    static InputStream sin;
+public class MainActivity extends Activity implements View.OnClickListener {
+        private final static int WC = ViewGroup.LayoutParams.WRAP_CONTENT;
+        private final static int MP = ViewGroup.LayoutParams.MATCH_PARENT;
+        private final static int REQUEST_TEXT = 0;
+        private TextView textView;
+        private EditText editText;
 
-
-    static BufferedReader br;
-    static PrintWriter pw;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    protected void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
+        //setContentView(R.layout.activity_main);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setBackgroundColor(Color.WHITE);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        setContentView(layout);
+
+        textView = new TextView(this);
+        textView.setText("IPアドレスの入力（””をつけないで）");
+        textView.setTextColor(Color.BLACK);
+        textView.setTextSize(16);
+        layout.addView(textView);
+
+        editText = new EditText(this);
+        editText.setText("");
+        editText.setLayoutParams(new LinearLayout.LayoutParams(MP, WC));
+        layout.addView(editText);
+
+        Button button = new Button(this);
+        button.setText("接続");
+        button.setOnClickListener(this);
+        button.setLayoutParams(new LinearLayout.LayoutParams(WC,WC));
+        layout.addView(button);
+    }
 
 
-        Button sendButton = findViewById(R.id.send);
-        sendButton.setOnClickListener(v -> {
-                new Thread(() -> {
+    public void onClick(View v){
+        Intent intent = new Intent(this, SocketActivity.class);
 
-                try {
-                    s = new Socket("10.65.236.110", 4321);
-                    sout = s.getOutputStream();
-                    sin = s.getInputStream();
-                    br = new BufferedReader(new InputStreamReader(sin));
-                    pw = new PrintWriter(new OutputStreamWriter(sout),true);
-                    pw.println("hello android");
-                } catch(UnknownHostException | SecurityException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }).start();
-        });
+        intent.putExtra("text", editText.getText().toString());
+
+        startActivityForResult(intent, REQUEST_TEXT);
     }
 }
-/*
-public class MainActivity extends AppCompatActivity {
-
-    private AppBarConfiguration appBarConfiguration;
-private ActivityMainBinding binding;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-
-     binding = ActivityMainBinding.inflate(getLayoutInflater());
-     setContentView(binding.getRoot());
-
-        setSupportActionBar(binding.toolbar);
-
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-
-
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAnchorView(R.id.fab)
-                        .setAction("Action", null).show();
-            }
-        });
-
-
-    }
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
-    }
-
-
-}
-
- */
