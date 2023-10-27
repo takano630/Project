@@ -1,78 +1,82 @@
 package com.example.projectapp;
 
 import android.os.Bundle;
-
 import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.view.View;
-
+import android.app.Activity;
+import android.graphics.Color;
+import android.content.Intent;
 import androidx.core.view.WindowCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
 import com.example.projectapp.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import java.net.*;
+import java.io.*;
 
-public class MainActivity extends AppCompatActivity {
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.EditText;
 
-    private AppBarConfiguration appBarConfiguration;
-    private ActivityMainBinding binding;
+import java.io.IOException;
+import java.net.*;
+import java.nio.charset.StandardCharsets;
+
+import java.net.*;
+import java.io.*;
+import java.util.*;
+public class MainActivity extends Activity implements View.OnClickListener {
+        private final static int WC = ViewGroup.LayoutParams.WRAP_CONTENT;
+        private final static int MP = ViewGroup.LayoutParams.MATCH_PARENT;
+        private final static int REQUEST_TEXT = 0;
+        private TextView textView;
+        private EditText editText;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
+        //setContentView(R.layout.activity_main);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        LinearLayout layout = new LinearLayout(this);
+        layout.setBackgroundColor(Color.WHITE);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        setContentView(layout);
 
-        setSupportActionBar(binding.toolbar);
+        textView = new TextView(this);
+        textView.setText("IPアドレスの入力（””をつけないで）");
+        textView.setTextColor(Color.BLACK);
+        textView.setTextSize(16);
+        layout.addView(textView);
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        editText = new EditText(this);
+        editText.setText("");
+        editText.setLayoutParams(new LinearLayout.LayoutParams(MP, WC));
+        layout.addView(editText);
 
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAnchorView(R.id.fab)
-                        .setAction("Action", null).show();
-            }
-        });
+        Button button = new Button(this);
+        button.setText("接続");
+        button.setOnClickListener(this);
+        button.setLayoutParams(new LinearLayout.LayoutParams(WC,WC));
+        layout.addView(button);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public void onClick(View v){
+        Intent intent = new Intent(this, SocketActivity.class);
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        intent.putExtra("text", editText.getText().toString());
 
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
+        startActivityForResult(intent, REQUEST_TEXT);
     }
 }

@@ -8,12 +8,11 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-
 import com.example.projectapp.databinding.FragmentFirstBinding;
 
 public class FirstFragment extends Fragment {
 
-    private FragmentFirstBinding binding;
+private FragmentFirstBinding binding;
 
     @Override
     public View onCreateView(
@@ -21,24 +20,30 @@ public class FirstFragment extends Fragment {
             Bundle savedInstanceState
     ) {
 
-        binding = FragmentFirstBinding.inflate(inflater, container, false);
-        return binding.getRoot();
+      binding = FragmentFirstBinding.inflate(inflater, container, false);
+      return binding.getRoot();
 
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        //ここコメントアウトしたからボタンを押してもアクション無し
+/*
         binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 NavHostFragment.findNavController(FirstFragment.this)
                         .navigate(R.id.action_FirstFragment_to_SecondFragment);
             }
+
+
         });
+
+ */
     }
 
-    @Override
+@Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
